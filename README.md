@@ -2,6 +2,8 @@
 
 Vue3 Video Analysis is a web application designed for simulating an inference server for video analysis tasks. It provides users with the ability to create and manage projects, stream videos, capture frames, investigate captured frames, and tag frames for further analysis.
 
+![Image Description](/public/img/screenshot.png)
+
 ## Features:
 
 - **Project Creation and Management:** Users can create new projects, view existing projects, and delete projects.
