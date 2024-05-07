@@ -12,7 +12,8 @@
               flat
               dense
               color="secundary"
-              label="Nieuw project"
+              label="New Project"
+              class="btn-new-project"
               icon="add"
               @click="createProject"
             />
@@ -67,7 +68,9 @@
         </div>
       </div>
     </div>
-    <create-project-dialog v-model="promt"></create-project-dialog>
+    <create-project-dialog
+      v-model="showCreateProjectDialog"
+    ></create-project-dialog>
   </div>
 </template>
 
@@ -84,12 +87,13 @@ defineOptions({
 });
 
 const projectStore = useProjectStore();
-const promt = ref(false);
+const showCreateProjectDialog = ref(false);
 
 const projects = computed(() => {
   return projectStore.$state.projects.map((project) => {
     return {
       ...project,
+      thumbnail: project.frames?.[0]?.thumbnail,
       timeupdated: date.formatDate(project.timeupdated, 'YYYY-MM-DD'),
     };
   });
@@ -105,7 +109,7 @@ const removeProject = (project: Project) =>
   project.id && projectStore.removeProject(project.id);
 
 const createProject = () => {
-  promt.value = true;
+  showCreateProjectDialog.value = true;
 };
 
 const getCaptureText = (project: Project) =>

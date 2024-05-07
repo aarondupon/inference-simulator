@@ -16,7 +16,7 @@ export type TouchPinchValue = {
 };
 
 export const vTouchPinch = {
-  mounted(el, binding, vnode) {
+  mounted(el, binding) {
     const $el = el as HTMLElementWithState;
     const state = {
       initialDistance: 0,
@@ -97,8 +97,6 @@ export const vTouchPinch = {
 
         binding.value(details) as TouchPinchValue;
       }
-
-      console.log('wheel');
     };
 
     function adjustZoom(zoomAmount: number | null = null, zoomFactor = 1) {
@@ -114,10 +112,10 @@ export const vTouchPinch = {
       );
     }
 
-    $el.addEventListener('wheel', $el._mouseWheel);
-    $el.addEventListener('touchmove', $el._touchMove);
-    $el.addEventListener('touchend', $el._touchEnd);
-    console.log($el, binding.value, vnode);
+    $el.addEventListener('wheel', $el._mouseWheel, { passive: true });
+    $el.addEventListener('touchmove', $el._touchMove, { passive: true });
+    $el.addEventListener('touchend', $el._touchEnd, { passive: true });
+
     return state;
   },
   unmounted(el) {

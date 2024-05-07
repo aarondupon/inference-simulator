@@ -1,4 +1,11 @@
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = process.env.API_URL;
+/**
+ * Uploads an image to the server.
+ *
+ * @param data - The image data to upload.
+ * @param projectname - The name of the project associated with the image.
+ * @throws Error if there is an error uploading the image.
+ */
 export async function uploadImage(
   data: string,
   projectname: string
@@ -17,6 +24,13 @@ export async function uploadImage(
   }
 }
 
+/**
+ * Updates the tags of an image.
+ *
+ * @param tags - The new tags to assign to the image.
+ * @param image - The name of the image to update.
+ * @throws Error if there is an error adding the tags.
+ */
 export async function updateTags(tags: string[], image: string): Promise<void> {
   try {
     const urlencoded = new URLSearchParams();

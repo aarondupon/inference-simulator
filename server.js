@@ -10,7 +10,12 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// add tags to image
+/**
+ * API to add tags to an image
+ * @param {string} imagePath - The path to the image
+ * @param {string[]} tags - The tags to add to the image
+ * @returns {string} - A message indicating the success or failure of the operation
+ */
 app.post('/api/tag/*', (req, res) => {
   const tags = req.body.tags;
   const imagePath = req.params[0];
@@ -24,7 +29,7 @@ app.post('/api/tag/*', (req, res) => {
   let zeroth = {};
   let exif = {};
   let gps = {};
-  console.log(tags);
+
   zeroth[piexif.ImageIFD.Make] = 'Custom Make';
   exif[piexif.ExifIFD.DateTimeOriginal] = '2022:01:01 00:00:00';
   exif[piexif.ExifIFD.DateTimeOriginal] = '2022:01:01 00:00:00';
@@ -49,7 +54,12 @@ app.post('/api/tag/*', (req, res) => {
   res.send('Tags added successfully');
 });
 
-// upload image
+/**
+ * API to upload an image
+ * @param {string} name - The name of the project
+ * @param {string} data - The base64 encoded image data
+ * @returns {string} - A message indicating the success or failure of the operation
+ */
 app.post('/api/upload/:name', (req, res) => {
   const base64String = req.body.data;
   const { name } = req.params;
@@ -76,6 +86,12 @@ app.post('/api/upload/:name', (req, res) => {
   });
 });
 
+/**
+ * API to delete an image
+ * @param {string} name - The name of the project
+ * @param {string} filename - The name of the image file
+ * @returns {string} - A message indicating the success or failure of the operation
+ */
 app.get('/api/project', (req, res) => {
   const folderPath = './public/uploads';
   fs.readdir(folderPath, (err, files) => {
@@ -131,9 +147,15 @@ app.get('/api/projects', (req, res) => {
   });
 });
 
+/**
+ * API to delete an image
+ * @param {string} name - The name of the project
+ * @param {string} filename - The name of the image file
+ * @returns {string} - A message indicating the success or failure of the operation
+ */
 app.post('/api/project', (req, res) => {
   const { name } = req.body;
-  console.log('body', name);
+
   const projectPath = `./public/uploads/${name}`;
   fs.mkdir(projectPath, (err) => {
     if (err) {
@@ -159,6 +181,12 @@ app.post('/api/project', (req, res) => {
   });
 });
 
+/**
+ * API to delete an image
+ * @param {string} name - The name of the project
+ * @param {string} filename - The name of the image file
+ * @returns {string} - A message indicating the success or failure of the operation
+ */
 app.delete('/api/project/:name', (req, res) => {
   const { name } = req.params;
   const folderPath = `./public/uploads/${name}`;
@@ -171,7 +199,12 @@ app.delete('/api/project/:name', (req, res) => {
   });
 });
 
-// read tags from image
+/**
+ * API to delete an image
+ * @param {string} name - The name of the project
+ * @param {string} filename - The name of the image file
+ * @returns {string} - A message indicating the success or failure of the operation
+ */
 app.get('/api/tag/*', (req, res) => {
   const imagePath = req.params[0];
   const filepath = path.join(__dirname, imagePath);
@@ -190,7 +223,6 @@ function readTagsFromImage(imagePath) {
 
   // Extract the custom metadata
   let tags = exifObj.Exif[piexif.ExifIFD.UserComment];
-  console.log(tags);
 
   return tags ? tags.split(',') : [];
 }

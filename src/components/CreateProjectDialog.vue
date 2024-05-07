@@ -4,9 +4,10 @@
       <q-card-section horizontal class="">
         <q-card-section class="col-8 card-left">
           <div>
-            <div class="text-h6">New Project</div>
+            <div class="text-h6">Create Project</div>
             <q-input
               filled
+              class="input-new-project"
               @keyup.enter="createProject"
               :error="fields.name.isError"
               :error-message="fields.name.message"
@@ -16,21 +17,24 @@
           </div>
 
           <div class="q-mt-md">
-            <q-btn flat color="grey-6" label="cancel" v-close-popup />
+            <q-btn
+              flat
+              color="grey-6"
+              class="btn-cancel"
+              label="Cancel"
+              v-close-popup
+            />
             <q-btn
               @click="createProject"
               flat
+              class="btn-save-project"
               color="primary"
               label="Save"
             ></q-btn>
           </div>
         </q-card-section>
 
-        <q-img
-          style="min-height: 200px"
-          class="col-4"
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        />
+        <q-img style="min-height: 200px" class="col-4" src="/img/project.jpg" />
       </q-card-section>
     </q-card>
   </q-dialog>

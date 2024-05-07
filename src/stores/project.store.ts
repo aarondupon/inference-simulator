@@ -10,29 +10,7 @@ export type ProjectState = {
 export const useProjectStore = defineStore('project', {
   state: (): ProjectState => ({
     selectedProjectId: null,
-    projects: [
-      {
-        id: 1,
-        name: 'Our Changing Planet',
-        thumbnail: 'https://cdn.quasar.dev/img/parallax2.jpg',
-        timeupdated: new Date(),
-        timecreated: new Date(),
-      },
-      {
-        id: 2,
-        name: 'Unseen Beauty',
-        thumbnail: 'https://cdn.quasar.dev/img/parallax1.jpg',
-        timeupdated: new Date(),
-        timecreated: new Date(),
-      },
-      {
-        id: 3,
-        name: 'The Secret World of Plants',
-        thumbnail: 'https://cdn.quasar.dev/img/parallax3.jpg',
-        timeupdated: new Date(),
-        timecreated: new Date(),
-      },
-    ],
+    projects: [],
   }),
   actions: {
     async createProject(props: Partial<Project>) {
@@ -55,7 +33,6 @@ export const useProjectStore = defineStore('project', {
     },
     getCurrentProject() {
       if (this.$state.selectedProjectId === null) {
-        console.warn('No project selected');
         return null;
       }
       return this.getProject(this.$state.selectedProjectId);

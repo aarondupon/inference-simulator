@@ -51,7 +51,6 @@ export const useCaptureStore = defineStore('capture', {
       this.$state.isStreaming = true;
     },
     addTag(frameId: number, value: string): void {
-      console.log('add', frameId);
       const frame = (this.$state.frames as Frame[]).find(
         (frame) => frame.id === frameId
       );

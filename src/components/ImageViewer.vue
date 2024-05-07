@@ -108,6 +108,13 @@ watch(
   { immediate: true }
 );
 
+/**
+ * This component is still in beta and may not work as expected.
+ * resize observer is not implemented yet.
+ * it allow scalling by touch, mouseweel, menu selection, inputfield and buttons
+ * it allow panning by touch and mouse
+ */
+
 const cameraOffset = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 const cameraZoom = ref(1);
 const cameraZoomScaled = computed({
@@ -173,14 +180,12 @@ onMounted(() => {
 });
 
 const handlePan: TouchPanValue = (e) => {
-  console.log('panning', e);
   if (!cameraOffset) return;
   cameraOffset.x += (e.delta?.x || 0) / cameraZoom.value;
   cameraOffset.y += (e.delta?.y || 0) / cameraZoom.value;
 };
 
 const handePinch = (e: TouchPinchValue) => {
-  console.log('pinching', e);
   cameraOffset.x += e.delta?.x || 0;
   cameraOffset.y += e.delta?.y || 0;
   cameraZoom.value = e.zoom;

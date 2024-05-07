@@ -9,6 +9,7 @@
           <q-form @submit.prevent="() => {}" ref="form" class="full-width">
             <q-input
               v-model="text"
+              class="input-tag"
               type="text"
               dense
               outlined

@@ -59,12 +59,20 @@ const captureCount = computed(() => {
 
 const initializeVideoPlayer = () => {
   if (!video.value) return;
-  video.value.src = '/examples/video.mp4';
+  video.value.src = '/examples/sample.mp4';
   video.value.volume = 0;
   video.value.load();
-  video.value.play();
-  captureStore.startVideoStream();
-  videoStreaming.value = true;
+
+  video.value.addEventListener('loadeddata', () => {
+    console.log('Video has loaded');
+    try {
+      video.value && video.value.play();
+    } catch (error) {
+      console.error('Error playing video:', error);
+    }
+    captureStore.startVideoStream();
+    videoStreaming.value = true;
+  });
 };
 
 const startPauseStream = () => {
@@ -83,7 +91,9 @@ const startPauseStream = () => {
 
 const captureFrame = () => {
   if (!video.value || !canvas.value) return;
-  // scale to fitto 640x480
+  // create scaled jpg 300x200
+  // in real live thumbnail is created on the server by imagemagic or similar
+
   const width = 300;
   const height = 200;
   const scale = Math.min(
@@ -102,9 +112,10 @@ const captureFrame = () => {
   ctx.drawImage(video.value, 0, 0, scaledWidth, scaledHeight);
 
   const capturedThumbnailImage = canvas.value.toDataURL('image/jpeg');
-  // full size
-  canvas.value.width = video.value.videoWidth / 10;
-  canvas.value.height = video.value.videoHeight / 10;
+
+  // create full size jpeg image
+  canvas.value.width = video.value.videoWidth;
+  canvas.value.height = video.value.videoHeight;
   canvas.value.getContext('2d')?.drawImage(video.value, 0, 0);
   const capturedImage = canvas.value.toDataURL('image/jpeg');
   const projectStore = useProjectStore();
@@ -112,36 +123,22 @@ const captureFrame = () => {
   const project = projectStore.getCurrentProject();
   if (!project) return;
 
-  // create model for image
-  captureStore.createImage(
-    {
-      image: capturedImage,
-      thumbnail: capturedThumbnailImage,
-      name: 'Captured Image' + captureStore.$state.frames.length,
-      timecreated: new Date(),
-      id: captureStore.$state.frames.length + 1,
-      tags: [],
-    },
-    project.name
-  );
+  // create frame object
+  const frame = {
+    image: capturedImage,
+    thumbnail: capturedThumbnailImage,
+    name: 'Captured Image' + captureStore.$state.frames.length,
+    timecreated: new Date(),
+    id: captureStore.$state.frames.length + 1,
+    tags: [],
+  };
 
+  // add frame to store
+  captureStore.createImage(frame, project.name);
+
+  // Do some funky animation so the user knows a screenshot has been taken.
+  // It may not be the best feedback, but it works.
   toggleOpacity();
-};
-
-let timeoutId: ReturnType<typeof setTimeout> | null = null;
-
-const toggleOpacity = () => {
-  if (video.value) {
-    video.value.classList.remove('fade-in-out');
-    video.value.classList.add('fade-in-out');
-    // Clear the previous timeout if it exists
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    timeoutId = setTimeout(() => {
-      video.value && video.value.classList.remove('fade-in-out');
-    }, 500);
-  }
 };
 
 const isLeftDrawerOpen = computed(() => {
@@ -151,9 +148,23 @@ const toggleFrames = () => {
   captureStore.$state.leftDrawerOpen = !captureStore.$state.leftDrawerOpen;
 };
 onMounted(() => {
-  console.log(captureStore.$state);
   initializeVideoPlayer();
 });
+
+// This is a simple animation to show the user that a screenshot has been taken.
+let timeoutId: ReturnType<typeof setTimeout> | null = null;
+const toggleOpacity = () => {
+  if (video.value) {
+    video.value.classList.remove('fade-in-out');
+    video.value.classList.add('fade-in-out');
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      video.value && video.value.classList.remove('fade-in-out');
+    }, 500);
+  }
+};
 </script>
 
 <style scoped>

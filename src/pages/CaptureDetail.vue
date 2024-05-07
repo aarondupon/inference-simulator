@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 import { date } from 'quasar';
@@ -42,12 +42,31 @@ const captureStore = useCaptureStore();
 const projectStore = useProjectStore();
 
 // nav
-// const currentIndex = ref(0);
-const currentIndex = computed(() => captureStore.$state.selectedFrameId);
+const currentIndex = ref(() => captureStore.$state.selectedFrameId);
+watchEffect(() => {
+  currentIndex.value = captureStore.$state.frames.findIndex(
+    (frame) => frame.id === captureStore.$state.selectedFrameId
+  );
+});
+
+function prevImage() {
+  currentIndex.value =
+    (currentIndex.value - 1 + frames.value.length) % frames.value.length;
+  const frameId = frames.value[currentIndex.value].id;
+  frameId && captureStore.setSelectedFrameById(frameId);
+}
+
+function nextImage() {
+  currentIndex.value = (currentIndex.value + 1) % frames.value.length;
+  const frameId = frames.value[currentIndex.value].id;
+  frameId && aptureStore.setSelectedFrameById(frameId);
+}
+
+// frames
 const frames = computed(() => captureStore.$state.frames);
 const currentImage = computed(() => {
-  const frameId = captureStore.$state.selectedFrameId;
-  console.log('frameId', frameId);
+  const frameId = currentIndex.value;
+  console.log(frameId);
   const frame = frames.value[frameId];
   if (!frame) return null;
   const timecreated = date.formatDate(frame.timecreated, 'YYYY-MM-DD');
@@ -56,19 +75,6 @@ const currentImage = computed(() => {
     timecreated: timecreated,
   };
 });
-
-function prevImage() {
-  currentIndex.value =
-    (currentIndex.value - 1 + frames.value.length) % frames.value.length;
-  const frameId = frames.value[currentIndex.value].id;
-  captureStore.setSelectedFrameById(frameId);
-}
-
-function nextImage() {
-  currentIndex.value = (currentIndex.value + 1) % frames.value.length;
-  const frameId = frames.value[currentIndex.value].id;
-  captureStore.setSelectedFrameById(frameId);
-}
 
 // load on refresh page
 onBeforeMount(async () => {
@@ -83,7 +89,7 @@ onBeforeMount(async () => {
   if (frames) {
     const frameId = Number(route.params.frameId);
     captureStore.setFrames(frames);
-    captureStore.setSelectedFrameById(frameId);
+    frameId && captureStore.setSelectedFrameById(frameId);
     currentIndex.value = frames.findIndex((frame) => frame.id === frameId);
   }
 });
