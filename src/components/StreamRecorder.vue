@@ -5,13 +5,13 @@
     <div class="container__inner rounded-borders q-pa-md">
       <video class="full-width full-height" ref="video" autoplay muted></video>
     </div>
-    <div class="bg-white q-pb-sm q-gutter-sm rounded-borders full-width">
+    <div class="q-pb-sm q-gutter-sm rounded-borders full-width">
       <q-btn
         flat
         class="bg-primary text-white"
         @click="startPauseStream"
-        :label="videoStreaming ? 'Pause' : 'Play'"
-        :icon-right="videoStreaming ? 'pause' : 'play_arrow'"
+        :label="videoStreaming ? 'Stop' : 'Play'"
+        :icon-right="videoStreaming ? 'stop' : 'play_arrow'"
       >
       </q-btn>
       <q-btn
@@ -25,14 +25,26 @@
       >
         <q-badge color="secondary" floating>{{ captureCount }}</q-badge>
       </q-btn>
+      <q-btn
+        v-if="captureCount"
+        flat
+        class="bg-white text-secondary"
+        @click="toggleFrames"
+        :label="isLeftDrawerOpen ? 'Hide Frames' : 'Show Frames'"
+      >
+      </q-btn>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useAppStore } from '../stores/app-store';
-const appStore = useAppStore();
+import { ref, onMounted, computed } from 'vue';
+import { useCaptureStore } from '../stores/capture.store';
+import { useProjectStore } from 'src/stores/project.store';
+
+const emit = defineEmits(['stop', 'start']);
+
+const captureStore = useCaptureStore();
 const video = ref<HTMLVideoElement | null>(null);
 const videoStreaming = ref(false);
 
@@ -41,7 +53,9 @@ if (!canvas.value) {
   canvas.value = document.createElement('canvas');
 }
 
-const captureCount = ref(0);
+const captureCount = computed(() => {
+  return captureStore.$state.frames.length;
+});
 
 const initializeVideoPlayer = () => {
   if (!video.value) return;
@@ -49,7 +63,7 @@ const initializeVideoPlayer = () => {
   video.value.volume = 0;
   video.value.load();
   video.value.play();
-  appStore.startVideoStream();
+  captureStore.startVideoStream();
   videoStreaming.value = true;
 };
 
@@ -57,10 +71,12 @@ const startPauseStream = () => {
   if (!video.value) return;
   if (videoStreaming.value) {
     video.value.pause();
-    appStore.stopVideoStream();
+    captureStore.stopVideoStream();
+    emit('stop');
   } else {
     video.value.play();
-    appStore.startVideoStream();
+    captureStore.startVideoStream();
+    emit('start');
   }
   videoStreaming.value = !videoStreaming.value;
 };
@@ -87,22 +103,28 @@ const captureFrame = () => {
 
   const capturedThumbnailImage = canvas.value.toDataURL('image/jpeg');
   // full size
-  canvas.value.width = video.value.videoWidth;
-  canvas.value.height = video.value.videoHeight;
+  canvas.value.width = video.value.videoWidth / 10;
+  canvas.value.height = video.value.videoHeight / 10;
   canvas.value.getContext('2d')?.drawImage(video.value, 0, 0);
   const capturedImage = canvas.value.toDataURL('image/jpeg');
+  const projectStore = useProjectStore();
+
+  const project = projectStore.getCurrentProject();
+  if (!project) return;
 
   // create model for image
-  appStore.addImage({
-    image: capturedImage,
-    thumbnail: capturedThumbnailImage,
-    title: 'Captured Image' + appStore.$state.thumbnails.length,
-    timecreated: new Date(),
-    uuid: `${appStore.$state.thumbnails.length}`,
-    tags: [],
-  });
+  captureStore.createImage(
+    {
+      image: capturedImage,
+      thumbnail: capturedThumbnailImage,
+      name: 'Captured Image' + captureStore.$state.frames.length,
+      timecreated: new Date(),
+      id: captureStore.$state.frames.length + 1,
+      tags: [],
+    },
+    project.name
+  );
 
-  captureCount.value += 1;
   toggleOpacity();
 };
 
@@ -112,19 +134,24 @@ const toggleOpacity = () => {
   if (video.value) {
     video.value.classList.remove('fade-in-out');
     video.value.classList.add('fade-in-out');
-
     // Clear the previous timeout if it exists
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
-
     timeoutId = setTimeout(() => {
       video.value && video.value.classList.remove('fade-in-out');
     }, 500);
   }
 };
+
+const isLeftDrawerOpen = computed(() => {
+  return captureStore.$state.leftDrawerOpen;
+});
+const toggleFrames = () => {
+  captureStore.$state.leftDrawerOpen = !captureStore.$state.leftDrawerOpen;
+};
 onMounted(() => {
-  console.log(appStore.$state);
+  console.log(captureStore.$state);
   initializeVideoPlayer();
 });
 </script>

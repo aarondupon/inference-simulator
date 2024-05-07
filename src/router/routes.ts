@@ -4,7 +4,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: () => import('src/pages/ProjectListPage.vue'),
+    component: () => import('src/pages/Projects.vue'),
   },
   {
     path: '/projects/:id',
@@ -14,20 +14,20 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        name: 'projects-home',
+        name: 'capture',
         components: {
-          default: () => import('src/pages/CapturePage.vue'),
-          sidebar: () => import('src/components/CaptureList.vue'),
+          default: () => import('src/pages/Capture.vue'),
+          sidebar: () => import('src/components/sidebars/CaptureList.vue'),
         },
       },
       {
-        path: 'inspect/:uuid',
-        name: 'inspect',
+        path: 'capture-detail/:frameId',
+        name: 'capture-detail',
         components: {
-          default: () => import('src/pages/FrameDetailPage.vue'),
-          sidebar: () => import('src/pages/CaptureList.vue'),
+          default: () => import('src/pages/CaptureDetail.vue'),
+          sidebar: () => import('src/components/sidebars/CaptureList.vue'),
           'sidebar-right': () =>
-            import('src/pages/CapturePageSideBarRight.vue'),
+            import('src/components/sidebars/TagManager.vue'),
         },
       },
     ],
@@ -37,7 +37,7 @@ const routes: RouteRecordRaw[] = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
+    component: () => import('src/pages/404.vue'),
   },
 ];
 
