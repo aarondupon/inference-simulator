@@ -8,7 +8,7 @@ The project follows a client-server architecture, with a Vue.js 3 frontend servi
 
 ## Technologies Used
 
-# Frontend
+### Frontend
 
 - **Vue.js 3**: The frontend framework for building interactive user interfaces.
 - **Quasar Framework**: Used for UI components, styling, and overall design consistency.
@@ -16,11 +16,11 @@ The project follows a client-server architecture, with a Vue.js 3 frontend servi
 - **TypeScript**: Provides static typing for enhanced code readability and maintainability.
 - **css**: We prioritize using Quasar's helper classes whenever possible, and leverage SCSS when necessary for styling enhancements.
 
-# Backend
+### Backend
 
 - **Node.js**: Backend runtime environment for executing JavaScript code.
 - **Express.js**: Web application framework for building robust APIs.
-- this is only added to make a for proof of concept in current MPV. (can not be used for production)
+- This is only added to serve as a proof of concept in the current MVP. (It cannot be used for production.)
 
 ## Design Principles
 
@@ -44,7 +44,7 @@ This project follows a number of design principles for better organization and s
 
 ## User Interface
 
-# Layput
+### Layput
 
 **Tree-width-Layout with top header:**
 The main content in the center is where the action happens and can have an extra top navigation for more focused, context-aware actions.
@@ -54,13 +54,13 @@ The main content in the center is where the action happens and can have an extra
 - **Sidbar Right** Secondary actionsare placed in the right sidebar for easy access.
 - **Top header:** Ideal for application-level navigation (e.g., displaying projects, capturing).
 
-# Pages
+### Pages
 
 - **Projects page:** Project grid with options to create, rmove and opening projects
 - **Capture page:** A project landing page with a fake video stream. Users can capture frames, view a history, and navigate with arrows
 - **Capture detail Page:** A page allowing users to examine a single frame in detail by zooming & panning, with the ability to add or remove tags in the sidebar
 
-# Interaction
+### Interaction
 
 - **Mouse**: All actions should be possible with one click; no right-clicking.
 - **Touch**: Touch devices should be fully supported, including touch interactions (e.g., zooming, dragging).
