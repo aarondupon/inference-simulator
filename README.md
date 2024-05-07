@@ -7,7 +7,7 @@ Vue3 Video Analysis is a web application designed for simulating an inference se
 ## Features:
 
 - **Project Creation and Management:** Users can create new projects, view existing projects, and delete projects.
-- **Video Stream:** Users can start and stop a video stream, either from a looped video file or a live webcam feed.
+- **Video Stream:** Users can start and stop a video stream.
 - **Frame Capture:** Users can capture frames from the video stream, with each frame being stored along with a timestamp.
 - **Frame Investigation:** Captured frames are displayed as thumbnails, allowing users to click on them for a detailed view. Users can also add tags to frames for categorization.
 - **Not so Clean UI Design:** The application features a clean and intuitive user interface, making it easy to navigate and use.
