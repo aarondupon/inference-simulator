@@ -50,8 +50,8 @@ This project follows a number of design principles for better organization and s
 The main content in the center is where the action happens and can have an extra top navigation for more focused, context-aware actions.
 
 - **Main conten** The main content is centered for focus.
-- **Sidbar Left** The left sidebar holds primary actions and crucial navigation.
-- **Sidbar Right** Secondary actionsare placed in the right sidebar for easy access.
+- **Sidebar Left** The left sidebar holds primary actions and crucial navigation.
+- **Sidebar Right** Secondary actions are placed in the right sidebar for easy access.
 - **Top header:** Ideal for application-level navigation (e.g., displaying projects, capturing).
 
 ### Pages
